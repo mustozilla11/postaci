@@ -19,7 +19,7 @@
           <line x1="5" y1="12" x2="19" y2="12"></line>
         </svg>
       </button>
-      <div id="app-badge" class="app-badge" title="Postacı Sürümü">v0.2.0</div>
+      <div id="app-badge" class="app-badge" title="Postacı Sürümü">v0.3.0</div>
     </div>
   </header>
 
@@ -51,11 +51,19 @@
           </div>
         </button>
 
+        <button class="provider-btn" data-service="m365">
+          <span class="provider-icon service-svg" data-service="m365"></span>
+          <div class="provider-info">
+            <span class="provider-title">Microsoft 365</span>
+            <span class="provider-sub">Üniversite & İş Hesabı (mu.edu.tr)</span>
+          </div>
+        </button>
+
         <button class="provider-btn" data-service="outlook">
           <span class="provider-icon service-svg" data-service="outlook"></span>
           <div class="provider-info">
-            <span class="provider-title">Outlook</span>
-            <span class="provider-sub">Hotmail & Microsoft Live</span>
+            <span class="provider-title">Outlook / Live</span>
+            <span class="provider-sub">Kişisel Hotmail & Outlook</span>
           </div>
         </button>
 
@@ -99,10 +107,17 @@
               </div>
             </label>
             <label class="service-option">
+              <input type="radio" name="service" value="m365">
+              <div class="service-card">
+                <span class="service-svg" data-service="m365"></span>
+                <span>Microsoft 365</span>
+              </div>
+            </label>
+            <label class="service-option">
               <input type="radio" name="service" value="outlook">
               <div class="service-card">
                 <span class="service-svg" data-service="outlook"></span>
-                <span>Outlook</span>
+                <span>Outlook / Live</span>
               </div>
             </label>
             <label class="service-option">

@@ -1,6 +1,7 @@
 // Servis Logoları (SVG)
 const ICONS = {
   gmail: `<svg viewBox="0 0 24 24" width="20" height="20"><path fill="#EA4335" d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.272H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L12 9.5l8.073-6.007C21.69 2.279 24 3.434 24 5.457z"/></svg>`,
+  m365: `<svg viewBox="0 0 24 24" width="20" height="20"><path fill="#D83B01" d="M12 2L2 5.5v13L12 22l10-3.5v-13L12 2zm0 2.3l7.5 2.6-7.5 2.7-7.5-2.7L12 4.3zM4 7.8l7 2.5v9.3l-7-2.5V7.8zm9 11.8V10.3l7-2.5v9.3l-7 2.5z"/></svg>`,
   outlook: `<svg viewBox="0 0 24 24" width="20" height="20"><path fill="#0078D4" d="M14.5 3h8a1.5 1.5 0 0 1 1.5 1.5v15a1.5 1.5 0 0 1-1.5 1.5h-8v-18zm-2 0H3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3h9.5V3zm-5 6.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5z"/></svg>`,
   icloud: `<svg viewBox="0 0 24 24" width="20" height="20"><path fill="#34AADC" d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z"/></svg>`,
   custom: `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#a6adc8" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>`
@@ -106,6 +107,7 @@ function openAddModal(preselectedService = 'gmail') {
   
   const defaultNames = {
     gmail: 'Gmail',
+    m365: 'Microsoft 365 (Okul/İş)',
     outlook: 'Outlook',
     icloud: 'iCloud',
     custom: 'Webmail'
@@ -166,6 +168,7 @@ function closeModal() {
 
 const SERVICE_NAMES = {
   gmail: 'Gmail',
+  m365: 'Microsoft 365 (Okul/İş)',
   outlook: 'Outlook',
   icloud: 'iCloud',
   custom: 'Webmail'

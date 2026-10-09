@@ -26,6 +26,8 @@ function getServiceDefaultUrl(service) {
       return 'https://mail.google.com';
     case 'outlook':
       return 'https://login.live.com/login.srf?wa=wsignin1.0&rpsnv=16&ct=1&rver=7.0.6738.0&wp=MBI_SSL&wreply=https%3A%2F%2Foutlook.live.com%2Fowa%2F%3Fnsl%3D1';
+    case 'm365':
+      return 'https://outlook.office365.com';
     case 'icloud':
       return 'https://www.icloud.com/mail';
     default:
@@ -104,7 +106,10 @@ function createAccountView(account) {
       url.includes('login.live.com') ||
       url.includes('live.com') ||
       url.includes('outlook.com') ||
+      url.includes('office.com') ||
+      url.includes('office365.com') ||
       url.includes('microsoft.com') ||
+      url.includes('mu.edu.tr') ||
       url.includes('appleid.apple.com') ||
       url.includes('icloud.com');
 
