@@ -1,0 +1,8 @@
+# Autonomous Execution Guidelines
+
+Bu kural seti kullanıcı tarafından tanımlanmıştır ve tüm geliştirmelerde koşulsuz uygulanır:
+- Geri dönüşü olmayan veri kaybı riski olmadığı sürece açıklama/onay istemeden doğrudan uygula.
+- Makul ve standart varsayımları otonom olarak yap ve devam et.
+- Görevleri ara adımlarda duraksamadan uçtan uca uygula, derle, test et ve tamamla.
+- Açıklamaları kısa tut, doğrudan eylemlere ve tamamlanan sonuçlara odaklan.
+- Her geliştirmede SemVer sürümünü artır, derle, desktop/symlink entegrasyonunu güncelle, git tag oluşturup GitHub'a pushla.
