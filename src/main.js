@@ -33,6 +33,8 @@ function getServiceDefaultUrl(service) {
   }
 }
 
+let isModalOpen = false;
+
 function updateViewBounds() {
   if (!mainWindow) return;
 
@@ -43,12 +45,18 @@ function updateViewBounds() {
   const view = accountViews.get(activeAccountId);
   if (!view) return;
 
-  view.setBounds({
-    x: 0,
-    y: TAB_BAR_HEIGHT,
-    width: Math.max(0, width),
-    height: Math.max(0, height - TAB_BAR_HEIGHT)
-  });
+  // Modal açıkken native görünümü gizle; kapalıyken görünür yap ve boyutlandır
+  if (isModalOpen) {
+    view.setVisible(false);
+  } else {
+    view.setVisible(true);
+    view.setBounds({
+      x: 0,
+      y: TAB_BAR_HEIGHT,
+      width: Math.max(0, width),
+      height: Math.max(0, height - TAB_BAR_HEIGHT)
+    });
+  }
 }
 
 function createAccountView(account) {
@@ -265,6 +273,12 @@ ipcMain.handle('reload-tab', (_event, accountId) => {
   if (view) {
     view.webContents.reload();
   }
+  return true;
+});
+
+ipcMain.handle('set-modal-open', (_event, isOpen) => {
+  isModalOpen = Boolean(isOpen);
+  updateViewBounds();
   return true;
 });
 

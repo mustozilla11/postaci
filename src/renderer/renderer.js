@@ -125,7 +125,10 @@ function openAddModal(preselectedService = 'gmail') {
   }
 
   accountModalEl.classList.remove('hidden');
-  document.getElementById('account-name').focus();
+  window.postaciAPI.setModalOpen(true);
+  setTimeout(() => {
+    document.getElementById('account-name').focus();
+  }, 50);
 }
 
 function openEditModal(accountId) {
@@ -150,10 +153,15 @@ function openEditModal(accountId) {
   }
 
   accountModalEl.classList.remove('hidden');
+  window.postaciAPI.setModalOpen(true);
+  setTimeout(() => {
+    document.getElementById('account-name').focus();
+  }, 50);
 }
 
 function closeModal() {
   accountModalEl.classList.add('hidden');
+  window.postaciAPI.setModalOpen(false);
 }
 
 // Servis seçimi değiştiğinde Özel URL input'unu göster/gizle

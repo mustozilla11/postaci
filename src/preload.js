@@ -8,6 +8,7 @@ contextBridge.exposeInMainWorld('postaciAPI', {
   removeTab: (id) => ipcRenderer.invoke('remove-tab', id),
   reloadTab: (id) => ipcRenderer.invoke('reload-tab', id),
   updateTab: (account) => ipcRenderer.invoke('update-tab', account),
+  setModalOpen: (isOpen) => ipcRenderer.invoke('set-modal-open', isOpen),
   getAppVersion: () => ipcRenderer.invoke('get-app-version'),
   onTabsUpdated: (callback) => ipcRenderer.on('tabs-updated', (_event, value) => callback(value))
 });
