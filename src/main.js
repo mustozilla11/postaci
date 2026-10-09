@@ -1,4 +1,4 @@
-const { app, BrowserWindow, WebContentsView, ipcMain, Menu } = require('electron');
+const { app, BrowserWindow, WebContentsView, ipcMain } = require('electron');
 const path = require('path');
 const Store = require('./store');
 
@@ -6,24 +6,19 @@ const Store = require('./store');
 app.commandLine.appendSwitch('ozone-platform-hint', 'auto');
 app.commandLine.appendSwitch('enable-features', 'WaylandWindowDecorations');
 
-// Google / Microsoft hesap girişlerinde "Tarayıcı güvenli değil" hatası almamak için standart Chrome User-Agent
+// Standart Desktop Chrome User Agent
 const CHROME_USER_AGENT =
-  'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36';
+  'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.6723.191 Safari/537.36';
+
+// Google OAuth / Giriş sayfaları için versiyonsuz Chromeless User-Agent
+// (Google botguard tespitini aşarak "Bu tarayıcı veya uygulama güvenli olmayabilir" hatasını çözer)
+const CHROMELESS_USER_AGENT =
+  'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome Safari/537.36';
 
 let mainWindow = null;
 let store = null;
 const accountViews = new Map(); // id -> WebContentsView
 let activeAccountId = null;
-
-const DEFAULT_ACCOUNTS = [
-  {
-    id: 'default-gmail',
-    name: 'Gmail',
-    service: 'gmail',
-    url: 'https://mail.google.com',
-    createdAt: Date.now()
-  }
-];
 
 function getServiceDefaultUrl(service) {
   switch (service) {
@@ -39,12 +34,15 @@ function getServiceDefaultUrl(service) {
 }
 
 function updateViewBounds() {
-  if (!mainWindow || !activeAccountId) return;
-  const view = accountViews.get(activeAccountId);
-  if (!view) return;
+  if (!mainWindow) return;
 
   const [width, height] = mainWindow.getContentSize();
   const TAB_BAR_HEIGHT = 44; // Üst sekme çubuğu yüksekliği
+
+  if (!activeAccountId) return;
+  const view = accountViews.get(activeAccountId);
+  if (!view) return;
+
   view.setBounds({
     x: 0,
     y: TAB_BAR_HEIGHT,
@@ -68,7 +66,19 @@ function createAccountView(account) {
     }
   });
 
-  // User-Agent tanımlaması (Google OAuth uyumluluğu için kritik)
+  const session = view.webContents.session;
+
+  // İstek başlıklarını dinamik ayarla:
+  // accounts.google.com üzerinde Chromeless UA göndererek güvenli değil uyarısını engelliyoruz
+  session.webRequest.onBeforeSendHeaders((details, callback) => {
+    const isGoogleAuth = details.url.includes('accounts.google.com');
+    details.requestHeaders['User-Agent'] = isGoogleAuth
+      ? CHROMELESS_USER_AGENT
+      : CHROME_USER_AGENT;
+    callback({ requestHeaders: details.requestHeaders });
+  });
+
+  // Genel WebContents User-Agent
   view.webContents.setUserAgent(CHROME_USER_AGENT);
 
   const targetUrl = account.url || getServiceDefaultUrl(account.service);
@@ -76,14 +86,17 @@ function createAccountView(account) {
     view.webContents.loadURL(targetUrl);
   }
 
-  // Yeni pencere açma isteklerini varsayılan tarayıcıda veya aynı sekmede yönet
+  // Yeni pencere açma isteklerini yönet
   view.webContents.setWindowOpenHandler(({ url }) => {
-    // Aynı sağlayıcıdaki giriş / yönlendirme ise aynı sekmede yükle
-    if (url.includes('accounts.google.com') || url.includes('login.microsoftonline.com') || url.includes('appleid.apple.com')) {
+    if (
+      url.includes('accounts.google.com') ||
+      url.includes('login.microsoftonline.com') ||
+      url.includes('appleid.apple.com') ||
+      url.includes('live.com')
+    ) {
       view.webContents.loadURL(url);
       return { action: 'deny' };
     }
-    // Harici bağlantıları sistem tarayıcısında aç
     const { shell } = require('electron');
     shell.openExternal(url);
     return { action: 'deny' };
@@ -96,19 +109,27 @@ function createAccountView(account) {
 function activateAccountTab(accountId) {
   if (!mainWindow) return;
 
-  // Önceki aktif görünümü kaldır
+  // Önceki aktif görünümü pencereden kaldır
   if (activeAccountId && accountViews.has(activeAccountId)) {
     const prevView = accountViews.get(activeAccountId);
     try {
       mainWindow.contentView.removeChildView(prevView);
-    } catch (e) {
-      // Hata yoksa devam
-    }
+    } catch (e) {}
+  }
+
+  if (!accountId) {
+    activeAccountId = null;
+    store.set('activeAccountId', null);
+    return;
   }
 
   const accounts = store.get('accounts') || [];
   const account = accounts.find((a) => a.id === accountId);
-  if (!account) return;
+  if (!account) {
+    activeAccountId = null;
+    store.set('activeAccountId', null);
+    return;
+  }
 
   activeAccountId = accountId;
   store.set('activeAccountId', accountId);
@@ -141,16 +162,16 @@ function removeAccountTab(accountId) {
     if (accounts.length > 0) {
       activateAccountTab(accounts[0].id);
     } else {
-      activeAccountId = null;
-      store.set('activeAccountId', null);
+      activateAccountTab(null);
     }
   }
 }
 
 function createWindow() {
+  // Varsayılan hesap listesi boş (kullanıcı başlangıçta hesap seçer)
   store = new Store({
-    accounts: DEFAULT_ACCOUNTS,
-    activeAccountId: 'default-gmail',
+    accounts: [],
+    activeAccountId: null,
     windowBounds: { width: 1200, height: 800 }
   });
 
@@ -189,6 +210,8 @@ function createWindow() {
         ? savedActiveId
         : accounts[0].id;
       activateAccountTab(targetId);
+    } else {
+      activateAccountTab(null);
     }
   });
 

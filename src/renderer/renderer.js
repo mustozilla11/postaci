@@ -1,9 +1,9 @@
 // Servis Logoları (SVG)
 const ICONS = {
-  gmail: `<svg viewBox="0 0 24 24" width="16" height="16"><path fill="#EA4335" d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.272H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L12 9.5l8.073-6.007C21.69 2.279 24 3.434 24 5.457z"/></svg>`,
-  outlook: `<svg viewBox="0 0 24 24" width="16" height="16"><path fill="#0078D4" d="M14.5 3h8a1.5 1.5 0 0 1 1.5 1.5v15a1.5 1.5 0 0 1-1.5 1.5h-8v-18zm-2 0H3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3h9.5V3zm-5 6.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5z"/></svg>`,
-  icloud: `<svg viewBox="0 0 24 24" width="16" height="16"><path fill="#34AADC" d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z"/></svg>`,
-  custom: `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#a6adc8" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>`
+  gmail: `<svg viewBox="0 0 24 24" width="20" height="20"><path fill="#EA4335" d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.272H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L12 9.5l8.073-6.007C21.69 2.279 24 3.434 24 5.457z"/></svg>`,
+  outlook: `<svg viewBox="0 0 24 24" width="20" height="20"><path fill="#0078D4" d="M14.5 3h8a1.5 1.5 0 0 1 1.5 1.5v15a1.5 1.5 0 0 1-1.5 1.5h-8v-18zm-2 0H3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3h9.5V3zm-5 6.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5z"/></svg>`,
+  icloud: `<svg viewBox="0 0 24 24" width="20" height="20"><path fill="#34AADC" d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z"/></svg>`,
+  custom: `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#a6adc8" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>`
 };
 
 let currentAccounts = [];
@@ -11,24 +11,23 @@ let activeTabId = null;
 let contextTargetId = null;
 
 const tabsListEl = document.getElementById('tabs-list');
-const emptyStateEl = document.getElementById('empty-state');
+const welcomeScreenEl = document.getElementById('welcome-screen');
 const accountModalEl = document.getElementById('account-modal');
 const accountFormEl = document.getElementById('account-form');
 const btnAddAccount = document.getElementById('btn-add-account');
-const btnEmptyAdd = document.getElementById('btn-empty-add');
 const btnModalClose = document.getElementById('btn-modal-close');
 const btnModalCancel = document.getElementById('btn-modal-cancel');
 const groupCustomUrl = document.getElementById('group-custom-url');
 const contextMenuEl = document.getElementById('context-menu');
 const appBadgeEl = document.getElementById('app-badge');
 
-// Modal servis simgelerini doldur
+// Modal ve karşılama servis simgelerini yerleştir
 document.querySelectorAll('.service-svg').forEach(el => {
   const s = el.getAttribute('data-service');
   if (ICONS[s]) el.innerHTML = ICONS[s];
 });
 
-// Sürüm bilgisini getir
+// Sürüm bilgisini al
 window.postaciAPI.getAppVersion().then(v => {
   if (v) appBadgeEl.textContent = `v${v}`;
 });
@@ -37,11 +36,11 @@ function renderTabs() {
   tabsListEl.innerHTML = '';
 
   if (currentAccounts.length === 0) {
-    emptyStateEl.classList.remove('hidden');
+    welcomeScreenEl.classList.remove('hidden');
     return;
   }
 
-  emptyStateEl.classList.add('hidden');
+  welcomeScreenEl.classList.add('hidden');
 
   currentAccounts.forEach(account => {
     const tabEl = document.createElement('div');
@@ -60,20 +59,17 @@ function renderTabs() {
       </div>
     `;
 
-    // Sekmeye tıklama: Aktif sekme yap
     tabEl.addEventListener('click', (e) => {
       if (e.target.closest('.tab-close')) return;
       selectTab(account.id);
     });
 
-    // Sekme kapat butonu
     const closeBtn = tabEl.querySelector('.tab-close');
     closeBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       closeTab(account.id);
     });
 
-    // Sağ tık menüsü (Context Menu)
     tabEl.addEventListener('contextmenu', (e) => {
       e.preventDefault();
       showContextMenu(e.clientX, e.clientY, account.id);
@@ -104,13 +100,30 @@ async function closeTab(id) {
   renderTabs();
 }
 
-function openAddModal() {
+function openAddModal(preselectedService = 'gmail') {
   document.getElementById('edit-account-id').value = '';
-  document.getElementById('modal-title').textContent = 'Yeni Hesap Ekle';
-  document.getElementById('account-name').value = '';
+  document.getElementById('modal-title').textContent = 'Hesap Ekle';
+  
+  const defaultNames = {
+    gmail: 'Gmail',
+    outlook: 'Outlook',
+    icloud: 'iCloud',
+    custom: 'Webmail'
+  };
+  document.getElementById('account-name').value = defaultNames[preselectedService] || '';
   document.getElementById('account-url').value = '';
-  document.querySelector('input[name="service"][value="gmail"]').checked = true;
-  groupCustomUrl.style.display = 'none';
+
+  const radio = document.querySelector(`input[name="service"][value="${preselectedService}"]`);
+  if (radio) radio.checked = true;
+
+  if (preselectedService === 'custom') {
+    groupCustomUrl.style.display = 'block';
+    document.getElementById('account-url').setAttribute('required', 'required');
+  } else {
+    groupCustomUrl.style.display = 'none';
+    document.getElementById('account-url').removeAttribute('required');
+  }
+
   accountModalEl.classList.remove('hidden');
   document.getElementById('account-name').focus();
 }
@@ -129,9 +142,11 @@ function openEditModal(accountId) {
   if (account.service === 'custom') {
     groupCustomUrl.style.display = 'block';
     document.getElementById('account-url').value = account.url || '';
+    document.getElementById('account-url').setAttribute('required', 'required');
   } else {
     groupCustomUrl.style.display = 'none';
     document.getElementById('account-url').value = account.url || '';
+    document.getElementById('account-url').removeAttribute('required');
   }
 
   accountModalEl.classList.remove('hidden');
@@ -162,10 +177,8 @@ accountFormEl.addEventListener('submit', async (e) => {
   const url = document.getElementById('account-url').value.trim();
 
   if (editId) {
-    // Güncelleme
     await window.postaciAPI.updateTab({ id: editId, name, url: url || undefined });
   } else {
-    // Yeni ekleme
     await window.postaciAPI.addTab({ name, service, url: url || undefined });
   }
 
@@ -174,6 +187,14 @@ accountFormEl.addEventListener('submit', async (e) => {
   currentAccounts = data.accounts || [];
   activeTabId = data.activeAccountId;
   renderTabs();
+});
+
+// Karşılama ekranındaki servis kartlarına tıklama
+document.querySelectorAll('.provider-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const service = btn.getAttribute('data-service');
+    openAddModal(service);
+  });
 });
 
 // Sağ Tık Menüsü Kontrolleri
@@ -212,8 +233,7 @@ document.getElementById('ctx-close').addEventListener('click', () => {
 });
 
 // Event Listeners
-btnAddAccount.addEventListener('click', openAddModal);
-btnEmptyAdd.addEventListener('click', openAddModal);
+btnAddAccount.addEventListener('click', () => openAddModal('gmail'));
 btnModalClose.addEventListener('click', closeModal);
 btnModalCancel.addEventListener('click', closeModal);
 

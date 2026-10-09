@@ -19,25 +19,70 @@
           <line x1="5" y1="12" x2="19" y2="12"></line>
         </svg>
       </button>
-      <div id="app-badge" class="app-badge" title="Postacı Sürümü">v0.1.0</div>
+      <div id="app-badge" class="app-badge" title="Postacı Sürümü">v0.2.0</div>
     </div>
   </header>
 
-  <!-- Boş Durum (Hesap yoksa) -->
-  <div id="empty-state" class="empty-state hidden">
-    <div class="empty-card">
-      <div class="empty-icon">✉️</div>
-      <h2>Henüz bir e-posta hesabı eklenmedi</h2>
-      <p>Gmail, Outlook veya iCloud hesaplarınızı ekleyerek başlayabilirsiniz.</p>
-      <button id="btn-empty-add" class="btn-primary">Yeni Hesap Ekle</button>
+  <!-- Karşılama ve İlk Hesap Seçim Ekranı -->
+  <main id="welcome-screen" class="welcome-screen hidden">
+    <div class="welcome-card">
+      <div class="welcome-logo">
+        <svg viewBox="0 0 128 128" width="64" height="64">
+          <defs>
+            <linearGradient id="wel-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#3584e4" />
+              <stop offset="100%" stop-color="#1c71d8" />
+            </linearGradient>
+          </defs>
+          <rect width="128" height="128" rx="28" fill="url(#wel-grad)" />
+          <path d="M24 38c0-4.4 3.6-8 8-8h64c4.4 0 8 3.6 8 8v52c0 4.4-3.6 8-8 8H32c-4.4 0-8-3.6-8-8V38z" fill="#ffffff" opacity="0.95"/>
+          <path d="M26 34l38 30 38-30" stroke="#3584e4" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        </svg>
+      </div>
+      <h2>Postacı'ya Hoş Geldiniz</h2>
+      <p class="welcome-desc">Başlamak için bağlamak istediğiniz e-posta servisini seçin:</p>
+
+      <div class="quick-providers">
+        <button class="provider-btn" data-service="gmail">
+          <span class="provider-icon service-svg" data-service="gmail"></span>
+          <div class="provider-info">
+            <span class="provider-title">Gmail</span>
+            <span class="provider-sub">Google Mail Hesabı</span>
+          </div>
+        </button>
+
+        <button class="provider-btn" data-service="outlook">
+          <span class="provider-icon service-svg" data-service="outlook"></span>
+          <div class="provider-info">
+            <span class="provider-title">Outlook</span>
+            <span class="provider-sub">Hotmail & Microsoft Live</span>
+          </div>
+        </button>
+
+        <button class="provider-btn" data-service="icloud">
+          <span class="provider-icon service-svg" data-service="icloud"></span>
+          <div class="provider-info">
+            <span class="provider-title">iCloud</span>
+            <span class="provider-sub">Apple Mail Hesabı</span>
+          </div>
+        </button>
+
+        <button class="provider-btn" data-service="custom">
+          <span class="provider-icon service-svg" data-service="custom"></span>
+          <div class="provider-info">
+            <span class="provider-title">Özel Webmail</span>
+            <span class="provider-sub">Kişisel ya da Şirket Sunucusu</span>
+          </div>
+        </button>
+      </div>
     </div>
-  </div>
+  </main>
 
   <!-- Hesap Ekleme / Düzenleme Modal Penceresi -->
   <div id="account-modal" class="modal-overlay hidden">
     <div class="modal-card">
       <div class="modal-header">
-        <h3 id="modal-title">Yeni Hesap Ekle</h3>
+        <h3 id="modal-title">Hesap Ekle</h3>
         <button id="btn-modal-close" class="close-button">&times;</button>
       </div>
       <form id="account-form">
@@ -78,8 +123,8 @@
         </div>
 
         <div class="form-group">
-          <label for="account-name">Hesap Adı / Takma Ad</label>
-          <input type="text" id="account-name" placeholder="Örn: Kişisel Gmail, Şirket E-Postası" required>
+          <label for="account-name">Hesap Adı / Etiketi</label>
+          <input type="text" id="account-name" placeholder="Örn: Kişisel, İş, Okul" required>
         </div>
 
         <div class="form-group" id="group-custom-url" style="display: none;">
@@ -89,7 +134,7 @@
 
         <div class="modal-footer">
           <button type="button" id="btn-modal-cancel" class="btn-secondary">Vazgeç</button>
-          <button type="submit" class="btn-primary">Kaydet ve Aç</button>
+          <button type="submit" class="btn-primary">Kaydet ve Başlat</button>
         </div>
       </form>
     </div>
