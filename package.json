@@ -1,0 +1,38 @@
+{
+  "name": "postaci",
+  "productName": "Postacı",
+  "version": "0.1.0",
+  "description": "Hafif ve Çoklu Hesap Destekli Masaüstü E-Posta İstemcisi",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder --linux dir"
+  },
+  "keywords": [
+    "email",
+    "client",
+    "electron",
+    "kde",
+    "wayland",
+    "gmail",
+    "outlook",
+    "icloud"
+  ],
+  "author": "mustozilla11",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^33.2.1",
+    "electron-builder": "^25.1.8"
+  },
+  "dependencies": {},
+  "build": {
+    "appId": "com.postaci.app",
+    "productName": "Postacı",
+    "linux": {
+      "target": [
+        "dir"
+      ],
+      "category": "Network;Email;"
+    }
+  }
+}
