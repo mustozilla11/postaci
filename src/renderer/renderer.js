@@ -164,10 +164,26 @@ function closeModal() {
   window.postaciAPI.setModalOpen(false);
 }
 
-// Servis seçimi değiştiğinde Özel URL input'unu göster/gizle
+const SERVICE_NAMES = {
+  gmail: 'Gmail',
+  outlook: 'Outlook',
+  icloud: 'iCloud',
+  custom: 'Webmail'
+};
+
+// Servis seçimi değiştiğinde hesap adını ve Özel URL input'unu dinamik güncelle
 document.querySelectorAll('input[name="service"]').forEach(radio => {
   radio.addEventListener('change', (e) => {
-    if (e.target.value === 'custom') {
+    const val = e.target.value;
+    const nameInput = document.getElementById('account-name');
+    const editId = document.getElementById('edit-account-id').value;
+
+    // Yalnızca yeni hesap ekleme modundayken veya önceki servis adı otomatik yazılmışsa güncelle
+    if (!editId) {
+      nameInput.value = SERVICE_NAMES[val] || '';
+    }
+
+    if (val === 'custom') {
       groupCustomUrl.style.display = 'block';
       document.getElementById('account-url').setAttribute('required', 'required');
     } else {

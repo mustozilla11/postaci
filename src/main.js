@@ -25,7 +25,7 @@ function getServiceDefaultUrl(service) {
     case 'gmail':
       return 'https://mail.google.com';
     case 'outlook':
-      return 'https://outlook.live.com';
+      return 'https://login.live.com/login.srf?wa=wsignin1.0&rpsnv=16&ct=1&rver=7.0.6738.0&wp=MBI_SSL&wreply=https%3A%2F%2Foutlook.live.com%2Fowa%2F%3Fnsl%3D1';
     case 'icloud':
       return 'https://www.icloud.com/mail';
     default:
@@ -96,12 +96,19 @@ function createAccountView(account) {
 
   // Yeni pencere açma isteklerini yönet
   view.webContents.setWindowOpenHandler(({ url }) => {
-    if (
+    // E-posta servisleri ve giriş sağlayıcılarının açtığı yeni pencereleri sekme içinde tut
+    const isServiceAuthOrApp =
       url.includes('accounts.google.com') ||
+      url.includes('google.com') ||
       url.includes('login.microsoftonline.com') ||
+      url.includes('login.live.com') ||
+      url.includes('live.com') ||
+      url.includes('outlook.com') ||
+      url.includes('microsoft.com') ||
       url.includes('appleid.apple.com') ||
-      url.includes('live.com')
-    ) {
+      url.includes('icloud.com');
+
+    if (isServiceAuthOrApp) {
       view.webContents.loadURL(url);
       return { action: 'deny' };
     }
